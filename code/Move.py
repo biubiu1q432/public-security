@@ -1,6 +1,9 @@
 import serial
 
 
+#全局变量
+MOVE_FLAG = None  # 空闲/未完成：0   完成：1
+POINT_ID = None # 点号
 MY_SERIAL = serial.Serial("COM3", 9600)
 
 
@@ -23,16 +26,15 @@ class MOVE:
                     "0":self.GO, 
                     "1":self.GO, 
                     "2":self.GO, 
-
                     }
     
     def Para_Init(self):
-        global MOVE_FLAG, MY_SERIAL,COLOR_FLAG,POINT_ID
+        global MOVE_FLAG, MY_SERIAL,POINT_ID
         COLOR_FLAG = 0
         MOVE_FLAG = 0
 
     def GO(self):
-        global MOVE_FLAG, MY_SERIAL,COLOR_FLAG,POINT_ID
+        global MOVE_FLAG, MY_SERIAL,POINT_ID
         #发
         arr = "@|1|" + str(10) + "|" + str(100) + "|" + str(75) + "#"
         MY_SERIAL.write(arr.encode('utf-8'))
@@ -46,27 +48,10 @@ class MOVE:
                 self.Para_Init()
                 break
             
-            #突发侦察任务（只有前进过程才会用到）
-            if COLOR_FLAG == 1:#红色
-                #转向
-                self.STOP()
-                self.CW()
-                #侦察
-                self.detect.Detect()
-                #继续本次执行运动任务
-                MOVE_DICT[KEY]()
             
-            if COLOR_FLAG == 2:#绿色
-                #转向
-                self.STOP()
-                self.CCW()
-                #侦察
-                self.detect.Detect()
-                #继续本次执行运动任务
-                MOVE_DICT[KEY]()
 
     def Distance(self):
-        global MOVE_FLAG, MY_SERIAL,COLOR_FLAG,POINT_ID
+        global MOVE_FLAG, MY_SERIAL,POINT_ID
         #发
         MY_SERIAL.write("".encode('utf-8'))
         #收
@@ -79,24 +64,7 @@ class MOVE:
                 self.Para_Init()
                 break
             
-            #突发侦察任务（只有前进过程才会用到）
-            if COLOR_FLAG == 1:#红色
-                #转向
-                self.STOP()
-                self.CW()
-                #侦察
-                self.detect.Detect()
-                #继续本次执行运动任务
-                MOVE_DICT[KEY]()
             
-            if COLOR_FLAG == 2:#绿色
-                #转向
-                self.STOP()
-                self.CCW()
-                #侦察
-                self.detect.Detect()
-                #继续本次执行运动任务
-                MOVE_DICT[KEY]()
 
     def CW(self):
         global MOVE_FLAG, MY_SERIAL

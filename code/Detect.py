@@ -13,7 +13,7 @@ class Boardcast:
     
     def Recentage(self):
         # 加载mp3文件
-        pygame.mixer.music.load("/home/q/public security/sound/shape/rec.mp3")
+        pygame.mixer.music.load("/home/dad/public security/sound/color/blue.mp3")
         # 播放音乐
         pygame.mixer.music.play()
         # 等待音乐播放完毕
@@ -22,7 +22,7 @@ class Boardcast:
     
     def Triangle(self):
         # 加载mp3文件
-        pygame.mixer.music.load("/home/q/public security/sound/shape/tri.mp3")
+        pygame.mixer.music.load("/home/dad/public security/sound/shape/tri.mp3")
         # 播放音乐
         pygame.mixer.music.play()
         # 等待音乐播放完毕
@@ -31,7 +31,7 @@ class Boardcast:
     
     def Cricle(self):
         # 加载mp3文件
-        pygame.mixer.music.load("/home/q/public security/sound/shape/cri.mp3")
+        pygame.mixer.music.load("/home/dad/public security/sound/shape/cri.mp3")
         # 播放音乐
         pygame.mixer.music.play()
         # 等待音乐播放完毕
@@ -40,7 +40,7 @@ class Boardcast:
     
     def Star(self):
         # 加载mp3文件
-        pygame.mixer.music.load("/home/q/public security/sound/shape/star.mp3")
+        pygame.mixer.music.load("/home/dad/public security/sound/shape/star.mp3")
         # 播放音乐
         pygame.mixer.music.play()
         # 等待音乐播放完毕
@@ -55,7 +55,7 @@ class Boardcast:
     
     def red(self):
         # 加载mp3文件
-        pygame.mixer.music.load("/home/q/public security/sound/color/red.mp3")
+        pygame.mixer.music.load("/home/dad/public security/sound/color/red.mp3")
         # 播放音乐
         pygame.mixer.music.play()
         # 等待音乐播放完毕
@@ -64,7 +64,7 @@ class Boardcast:
     
     def green(self):
         # 加载mp3文件
-        pygame.mixer.music.load("/home/q/public security/code/sound/color/green.mp3")
+        pygame.mixer.music.load("/home/dad/public security/code/sound/color/green.mp3")
         # 播放音乐
         pygame.mixer.music.play()
         # 等待音乐播放完毕
@@ -73,7 +73,7 @@ class Boardcast:
     
     def blue(self):
         # 加载mp3文件
-        pygame.mixer.music.load("/home/q/public security/sound/color/blue.mp3")
+        pygame.mixer.music.load("/home/dad/public security/sound/color/blue.mp3")
         # 播放音乐
         pygame.mixer.music.play()
         # 等待音乐播放完毕
@@ -82,7 +82,7 @@ class Boardcast:
     
     def yellow(self):
         # 加载mp3文件
-        pygame.mixer.music.load("/home/q/public security/sound/color/yellow.mp3")
+        pygame.mixer.music.load("/home/dad/public security/sound/color/yellow.mp3")
         # 播放音乐
         pygame.mixer.music.play()
         # 等待音乐播放完毕

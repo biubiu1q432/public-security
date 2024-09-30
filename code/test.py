@@ -15,7 +15,14 @@ class Read_Serial:
         self.H = 10
         self.S = 23
         self.L = 36
-        self.allow_err = 10
+        self.allow_err = 500
+
+    #消息认证
+    def messages_config(self,messages):
+        if messages[0] != '@' and messages[0] != '#' and  messages[0] != '!':
+            return True
+        else:
+            return False
 
     #读HSL
     def read_HSL(self,messages):
@@ -36,17 +43,16 @@ class Read_Serial:
         #计算hsv和HSV的差距
         judge_err = [abs(self.H-h),abs(self.S-s),abs(self.L-l)]
         judge_err = sum(judge_err)
-        # print(judge_err)
+        #print(judge_err)
 
-        #如果差距小于允许误差
-        if judge_err < self.allow_err:
-            return True
-        else:
-            return False
+    #DONE
+    def read_MOVE(self,messages):
+        pass
 
     #ID
     def read_ID(self,messages):
         pass
+
 
 #运动
 class MOVE:
@@ -109,18 +115,19 @@ class MOVE:
         print("GO")
         #收
         while True:
-            data = MY_SERIAL.readline()
-            data = data.decode('utf-8')
-            if data:
-                #DONE
-                if data[0] == '@':
-                    break
-                #hsl
-                if data[0] == '#':
-                    #侦擦任务
-                    if self.read.read_HSL(data):
-                        print("侦擦任务")
-                #ID
+            data = MY_SERIAL.readline().decode('utf-8')
+            if self.read.messages_config(data):
+                continue
+            
+            #DONE
+            if data[0] == '@':
+                break
+            #hsl
+            if data[0] == '#':
+                #侦擦任务
+                if self.read.read_HSL(data):
+                    print("侦擦任务")
+            #ID
                     
     def Distance_100(self):
         global MY_SERIAL,POINT_ID,COLOR_FLAG
@@ -130,18 +137,19 @@ class MOVE:
         print("Distance")
         #收
         while True:
-            data = MY_SERIAL.readline()
-            data = data.decode('utf-8')
-            if data:
-                #DONE
-                if data[0] == '@':
-                    break
-                #hsl
-                if data[0] == '#':
-                    #侦擦任务
-                    if self.read.read_HSL(data):
-                        print("侦擦任务")
-                #ID
+            data = MY_SERIAL.readline().decode('utf-8')
+            if self.read.messages_config(data):
+                continue
+    
+            #DONE
+            if data[0] == '@':
+                break
+            #hsl
+            if data[0] == '#':
+                #侦擦任务
+                if self.read.read_HSL(data):
+                    print("侦擦任务")
+            #ID
     def Distance_50(self):
         global MY_SERIAL,POINT_ID,COLOR_FLAG
         #发
@@ -150,18 +158,19 @@ class MOVE:
         print("Distance")
         #收
         while True:
-            data = MY_SERIAL.readline()
-            data = data.decode('utf-8')
-            if data:
-                #DONE
-                if data[0] == '@':
-                    break
-                #hsl
-                if data[0] == '#':
-                    #侦擦任务
-                    if self.read.read_HSL(data):
-                        print("侦擦任务")
-                #ID     
+            data = MY_SERIAL.readline().decode('utf-8')
+            if self.read.messages_config(data):
+                continue
+    
+            #DONE
+            if data[0] == '@':
+                break
+            #hsl
+            if data[0] == '#':
+                #侦擦任务
+                if self.read.read_HSL(data):
+                    print("侦擦任务")
+            #ID
     def Distance_20(self):
         global MY_SERIAL,POINT_ID,COLOR_FLAG
         #发
@@ -170,12 +179,13 @@ class MOVE:
         print("Distance")
         #收
         while True:
-            data = MY_SERIAL.readline()
-            data = data.decode('utf-8')
-            if data:
-                #DONE
-                if data[0] == '@':
-                    break
+            data = MY_SERIAL.readline().decode('utf-8')
+            if self.read.messages_config(data):
+                continue
+    
+            #DONE
+            if data[0] == '@':
+                break
 
     #顺时针
     def CW(self):
@@ -186,14 +196,13 @@ class MOVE:
         print("CW")
         #收
         while True:
-            data = MY_SERIAL.readline()
-            data = data.decode('utf-8')
-            if data:
-                #DONE
-                if data[0] == '@':
-                    break
-
-                #ID
+            messages = MY_SERIAL.readline().decode('utf-8')
+            if self.read.messages_config(messages):
+                continue
+            #DONE
+            if messages[0] == '@':
+                break
+            #ID
     #逆时针
     def CCW(self):
         global MY_SERIAL
@@ -203,23 +212,27 @@ class MOVE:
         print("CCW")
         #收
         while True:
-            data = MY_SERIAL.readline()
-            data = data.decode('utf-8')
-            if data:
-                #DONE
-                if data[0] == '@':
-                    break       
+            messages = MY_SERIAL.readline().decode('utf-8')
+            if self.read.messages_config(messages):
+                continue
+            #DONE
+            if messages[0] == '@':
+                break
+            #ID  
 
     def STOP(self):
         pass
 
+move = MOVE()
+move.CCW()
 
-#主函数
-if __name__ == '__main__':
-    move = MOVE()
-    #遍历动作组
-    for i in MOVE_DICT:
-        i()
+
+# #主函数
+# if __name__ == '__main__':
+#     move = MOVE()
+#     #遍历动作组
+#     for i in MOVE_DICT:
+#         i()
         
 
 

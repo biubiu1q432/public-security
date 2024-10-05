@@ -19,6 +19,7 @@ def nothing(x):
     pass
 WindowName = 'result'
 cv2.namedWindow(WindowName, cv2.WINDOW_KEEPRATIO)  # 建立空窗口
+cv2.resizeWindow(WindowName, 200, 160)  # 调整窗口大小
 cv2.createTrackbar('Bl', WindowName, 0, 255, nothing)  # 创建滑动条
 cv2.createTrackbar('Gl', WindowName, 0, 255, nothing)  # 创建滑动条
 cv2.createTrackbar('Rl', WindowName, 0, 255, nothing)  # 创建滑动条
@@ -83,11 +84,10 @@ def main():
                         #绘制矩形框
                         cv2.rectangle(hsv_image, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 
-                cv2.namedWindow("hsv_image", cv2.WINDOW_KEEPRATIO)
                 cv2.namedWindow("mask", cv2.WINDOW_KEEPRATIO)
-
-                cv2.imshow("hsv_image", hsv_image)     
+                cv2.resizeWindow("mask", (300, 200))
                 cv2.imshow("mask", mask)
+                
                 # 按下 'q' 键退出循环
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break

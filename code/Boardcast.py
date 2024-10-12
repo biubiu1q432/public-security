@@ -11,7 +11,7 @@ class Boardcast:
         pygame.mixer.music.play()
         # 等待音乐播放完毕
         while pygame.mixer.music.get_busy():
-            pygame.time.Clock().tick(10)        
+            pygame.time.Clock().tick(1)        
     
     def Triangle(self):
         # 加载mp3文件
@@ -20,7 +20,7 @@ class Boardcast:
         pygame.mixer.music.play()
         # 等待音乐播放完毕
         while pygame.mixer.music.get_busy():
-            pygame.time.Clock().tick(10)        
+            pygame.time.Clock().tick(1)        
     
     def Cricle(self):
         # 加载mp3文件
@@ -29,7 +29,7 @@ class Boardcast:
         pygame.mixer.music.play()
         # 等待音乐播放完毕
         while pygame.mixer.music.get_busy():
-            pygame.time.Clock().tick(10)        
+            pygame.time.Clock().tick(1)        
     
     def Star(self):
         # 加载mp3文件
@@ -38,7 +38,7 @@ class Boardcast:
         pygame.mixer.music.play()
         # 等待音乐播放完毕
         while pygame.mixer.music.get_busy():
-            pygame.time.Clock().tick(10)        
+            pygame.time.Clock().tick(1)        
     
     def white(self):
         pass
@@ -53,7 +53,7 @@ class Boardcast:
         pygame.mixer.music.play()
         # 等待音乐播放完毕
         while pygame.mixer.music.get_busy():
-            pygame.time.Clock().tick(10)    
+            pygame.time.Clock().tick(1)    
     
     def green(self):
         # 加载mp3文件
@@ -62,7 +62,7 @@ class Boardcast:
         pygame.mixer.music.play()
         # 等待音乐播放完毕
         while pygame.mixer.music.get_busy():
-            pygame.time.Clock().tick(10)
+            pygame.time.Clock().tick(1)
     
     def blue(self):
         # 加载mp3文件
@@ -71,12 +71,19 @@ class Boardcast:
         pygame.mixer.music.play()
         # 等待音乐播放完毕
         while pygame.mixer.music.get_busy():
-            pygame.time.Clock().tick(10)
+            pygame.time.Clock().tick(1)
     
     def yellow(self):
         pass
 
+    def ID(self, id):
+        # 加载mp3文件
+        pygame.mixer.music.load("/home/dad/public security/sound/point/" + str(id) + ".mp3")
+        pygame.mixer.music.play()
+        # 等待音乐播放完毕
+        while pygame.mixer.music.get_busy():
+            pygame.time.Clock().tick(1)
 
-
-broadcast = Boardcast()
-broadcast.Recentage()
+# bc = Boardcast()
+# bc.Recentage()
+# bc.red()

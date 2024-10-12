@@ -7,104 +7,25 @@ import cv2
 import numpy as np
 import pygame
 import serial
-
+import Boardcast
 
 
 #全局变量
 MOVE_DICT = None #移动字典
 POINT_ID = None # 点号
-MY_SERIAL = serial.Serial(port="/dev/ttyUSB0",baudrate=115200,bytesize=serial.EIGHTBITS,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,)
+# MY_SERIAL = serial.Serial(port="/dev/ttyUSB0",baudrate=115200,bytesize=serial.EIGHTBITS,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,)
 COLOR_FLAG = None 
 
 
-class Boardcast:
-    def __init__(self):
-        pygame.mixer.init()
-    
-    def Recentage(self):
-        # 加载mp3文件
-        pygame.mixer.music.load("/home/dad/public security/sound/color/blue.mp3")
-        # 播放音乐
-        pygame.mixer.music.play()
-        # 等待音乐播放完毕
-        while pygame.mixer.music.get_busy():
-            pygame.time.Clock().tick(10)        
-    
-    def Triangle(self):
-        # 加载mp3文件
-        pygame.mixer.music.load("/home/dad/public security/sound/shape/tri.mp3")
-        # 播放音乐
-        pygame.mixer.music.play()
-        # 等待音乐播放完毕
-        while pygame.mixer.music.get_busy():
-            pygame.time.Clock().tick(10)        
-    
-    def Cricle(self):
-        # 加载mp3文件
-        pygame.mixer.music.load("/home/dad/public security/sound/shape/cri.mp3")
-        # 播放音乐
-        pygame.mixer.music.play()
-        # 等待音乐播放完毕
-        while pygame.mixer.music.get_busy():
-            pygame.time.Clock().tick(10)        
-    
-    def Star(self):
-        # 加载mp3文件
-        pygame.mixer.music.load("/home/dad/public security/sound/shape/star.mp3")
-        # 播放音乐
-        pygame.mixer.music.play()
-        # 等待音乐播放完毕
-        while pygame.mixer.music.get_busy():
-            pygame.time.Clock().tick(10)        
-    
-    def white(self):
-        pass
-    
-    def black(self):
-        pass
-    
-    def red(self):
-        # 加载mp3文件
-        pygame.mixer.music.load("/home/dad/public security/sound/color/red.mp3")
-        # 播放音乐
-        pygame.mixer.music.play()
-        # 等待音乐播放完毕
-        while pygame.mixer.music.get_busy():
-            pygame.time.Clock().tick(10)    
-    
-    def green(self):
-        # 加载mp3文件
-        pygame.mixer.music.load("/home/dad/public security/code/sound/color/green.mp3")
-        # 播放音乐
-        pygame.mixer.music.play()
-        # 等待音乐播放完毕
-        while pygame.mixer.music.get_busy():
-            pygame.time.Clock().tick(10)
-    
-    def blue(self):
-        # 加载mp3文件
-        pygame.mixer.music.load("/home/dad/public security/sound/color/blue.mp3")
-        # 播放音乐
-        pygame.mixer.music.play()
-        # 等待音乐播放完毕
-        while pygame.mixer.music.get_busy():
-            pygame.time.Clock().tick(10)
-    
-    def yellow(self):
-        # 加载mp3文件
-        pygame.mixer.music.load("/home/dad/public security/sound/color/yellow.mp3")
-        # 播放音乐
-        pygame.mixer.music.play()
-        # 等待音乐播放完毕
-        while pygame.mixer.music.get_busy():
-            pygame.time.Clock().tick(10)
-
+      
 #一次侦察流程，注意color_flag归位
 class Detect:
     
     def __init__(self):
         #摄像头初始化
         self.cap = cv2.VideoCapture(0)
+        self.cap.set(3, 640)
+        self.cap.set(4, 480) 
         #统计
         self.Shapes=[]
         self.Colors=[]
@@ -112,14 +33,14 @@ class Detect:
         self.Best_Color=None
         self.ROI_range=45
         
-        self.boardcast = Boardcast()
+        self.boardcast = Boardcast.Boardcast()
 
         '''可调参数'''
         #Canny阈值
         self.threshold1 = 50
         self.threshold2 = 88
         #面积过滤
-        self.areaMin = 5000
+        self.areaMin = 30000
         #形状与角点个数
         self.Recentage = 4
         self.Triangle = 3
@@ -187,8 +108,6 @@ class Detect:
         elif self.Best_Shape == "Cricle":
             self.boardcast.Circle()
 
-        time.sleep(0.2)
-
         if self.Best_Color == "Red":
             self.boardcast.red()
         elif self.Best_Color == "Blue":
@@ -253,16 +172,16 @@ class Detect:
                 else:
                     shape=None
                 
-        #         #调试
-        #         img_debug = img.copy()
-        #         cv2.drawContours(img_debug, cnt, -1, (255, 0, 255), 7)
-        #         cv2.rectangle(img_debug, (x , y ), (x + w , y + h ), (0, 255, 0), 5)
-        #         cv2.putText(img_debug, "Points: " + str(len(approx)), (x + w + 20, y + 20), cv2.FONT_HERSHEY_COMPLEX, .7,
-        #                     (0, 255, 0), 2)
-        #         cv2.putText(img_debug, "Area: " + str(int(area)), (x + w + 20, y + 45), cv2.FONT_HERSHEY_COMPLEX, 0.7,
-        #                     (0, 255, 0), 2)
-        #         print("Points: " + str(len(approx)))         
-        #         print("Area: "+ str(int(area)))        
+                #调试
+                # img_debug = img.copy()
+                # cv2.drawContours(img_debug, cnt, -1, (255, 0, 255), 7)
+                # cv2.rectangle(img_debug, (x , y ), (x + w , y + h ), (0, 255, 0), 5)
+                # cv2.putText(img_debug, "Points: " + str(len(approx)), (x + w + 20, y + 20), cv2.FONT_HERSHEY_COMPLEX, .7,
+                #             (0, 255, 0), 2)
+                # cv2.putText(img_debug, "Area: " + str(int(area)), (x + w + 20, y + 45), cv2.FONT_HERSHEY_COMPLEX, 0.7,
+                #             (0, 255, 0), 2)
+                # print("Points: " + str(len(approx)))         
+                # print("Area: "+ str(int(area)))        
                 
             
         # #调试
@@ -647,17 +566,6 @@ class MOVE:
         arr = "@|5|" + str(1) + "|" + str(0) + "|" + str(0) + "#"
         MY_SERIAL.write(arr.encode("ascii"))
 
-#TEST
-if __name__ == '__main__':
-    detect=Detect()
-    move = MOVE()
-    if detect.Detect():
-        pass
-    else:
-        move.CW()
-        move.CW()
-        detect.Detect()
-        print("ok")
 
-    
-    
+detect=Detect()
+detect.Detect()

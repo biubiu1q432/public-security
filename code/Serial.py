@@ -8,30 +8,25 @@
 import serial
 
 #全局变量
-MOVE_DICT = None #移动字典
-POINT_ID = None # 点号
 MY_SERIAL = serial.Serial(port="/dev/ttyUSB0",baudrate=115200,bytesize=serial.EIGHTBITS,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,)
-COLOR_FLAG = None 
 
 #串口（下位机）
 class Read_Serial:
     #构造函数
     def __init__(self):
         
-        self.H_floor = 33
-        self.S_floor = 79
-        self.L_floor= 32
+        self.H_floor = 79
+        self.S_floor = 54
+        self.L_floor = 30
         
-        self.H_color1= 9
-        self.S_color1= 89
-        self.L_color1= 35
+        self.H_color1= 66
+        self.S_color1= 87
+        self.L_color1= 29
         
-        self.H_color2= 28
-        self.S_color2= 113
-        self.L_color2= 32
+        self.H_color2= 418
+        self.S_color2= 429
+        self.L_color2= 193
         
-        self.allow_err= 32
-
     #消息认证
     def messages_config(self,messages):
         if messages[0] != '@' and messages[0] != '#' and  messages[0] != '!':
@@ -39,7 +34,7 @@ class Read_Serial:
         else:
             return False
 
-    #读HSL
+    #读HSL:#@|1|20|60|
     def read_HSL(self,messages):
         #找到第一个'|'
         index = messages.find('|')
@@ -53,21 +48,52 @@ class Read_Serial:
         s = int(messages[index+1:index2])
         #把index2+3和index2+5之间的字符串赋值给L
         l = int(messages[index2+1:index3])
-        print(h,s,l)
+        # print(h,s,l)
         
         #计算hsv和HSV的差距
-        judge_err = [abs(self.H_floor-h),abs(self.S_floor-s),abs(self.L_floor-l)]
-        judge_err = sum(judge_err)
-        #print(judge_err)
+        judge_err_f = [abs(self.H_floor-h),abs(self.S_floor-s),abs(self.L_floor-l)]
+        judge_err_f = sum(judge_err_f)
+
+        judge_err_c1 = [abs(self.H_color1-h),abs(self.S_color1-s),abs(self.L_color1-l)]
+        judge_err_c1 = sum(judge_err_c1)
+
+        judge_err_c2 = [abs(self.H_color2-h),abs(self.S_color2-s),abs(self.L_color2-l)]
+        judge_err_c2 = sum(judge_err_c2)        
+        
+        judge_err = min(judge_err_f,judge_err_c1,judge_err_c2)
+
+        
+        print("地板 "+str(judge_err_f))
+        print("颜色1 "+str(judge_err_c1))
+        print("颜色2 "+str(judge_err_c2))
+
+
+        #急停判定
+        if judge_err == judge_err_f:
+            return False
+        else:
+            return True
 
     #HSL参数自界定
     def HSL_test(self,num):
+        read = Read_Serial()
+        h_list= []
+        s_list = []
+        l_list = []
         
-        if num == 2:
-            for i in range(30):
-                messages = MY_SERIAL.readline().decode('utf-8')
-                if read.messages_config(messages):
+        if num == 1:        
+            arr = "@|1|" + str(20) + "|" + str(60) + "|" + str(75) + "#"
+            MY_SERIAL.write(arr.encode('utf-8'))
+            print("GO")
+            
+            for i in range(50):
+                try:
+                    messages = MY_SERIAL.readline().decode('utf-8')
+                except:
+                    continue
+                if messages[0] != '#' or self.messages_config(messages):
                     continue 
+                
                 index = messages.find('|')
                 index2 = messages.find('|',index+1)
                 index3 = messages.find('|',index2+1)
@@ -76,19 +102,18 @@ class Read_Serial:
                 l = int(messages[index2+1:index3])   
                 print(h,s,l)
 
-                h_list= []
-                s_list = []
-                l_list = []
                 h_list.append(h)
                 s_list.append(s)
                 l_list.append(l)
         
-            print("颜色2： "+str(int(sum(h_list)/len(h_list))),str(int(sum(s_list)/len(s_list))),str(int(sum(l_list)/len(l_list))))
-        
-        elif num == 1:
-            
-            for i in range(30):
-                messages = MY_SERIAL.readline().decode('utf-8')
+            print("颜色： "+str(int(sum(h_list)/len(h_list))),str(int(sum(s_list)/len(s_list))),str(int(sum(l_list)/len(l_list))))
+                           
+        elif num == 2:                    
+            for i in range(50):
+                try:
+                    messages = MY_SERIAL.readline().decode('utf-8')
+                except:
+                    continue                
                 if read.messages_config(messages):
                     continue 
                 index = messages.find('|')
@@ -97,69 +122,50 @@ class Read_Serial:
                 h = int(messages[1:index])
                 s = int(messages[index+1:index2])
                 l = int(messages[index2+1:index3])   
-                print(h,s,l)
 
-                h_list= []
-                s_list = []
-                l_list = []
                 h_list.append(h)
                 s_list.append(s)
-                l_list.append(l)            
+                l_list.append(l)
+                print(h,s,l)
         
-            print("颜色1： "+str(int(sum(h_list)/len(h_list))),str(int(sum(s_list)/len(s_list))),str(int(sum(l_list)/len(l_list)) ))
-                 
-        elif num == 4:
+            print("颜色： "+str(int(sum(h_list)/len(h_list))),str(int(sum(s_list)/len(s_list))),str(int(sum(l_list)/len(l_list))))
+        
+        elif num == 3:
             #计算允许误差
             err1 = int(abs(self.H_color1 - self.H_floor) + abs(self.S_color1 - self.S_floor) + abs(self.L_color1 - self.L_floor))#颜色1
             err2 = int(abs(self.H_color2 - self.H_floor) + abs(self.S_color2 - self.S_floor) + abs(self.L_color2 - self.L_floor))#颜色2
             #小的一项赋值
             print(str(min(err1,err2)))
-            
-        elif num == 3: 
-        
-            arr = "@|1|" + str(25) + "|" + str(60) + "|" + str(75) + "#"
-            MY_SERIAL.write(arr.encode('utf-8'))
-            
-            while True:
-
-                messages = MY_SERIAL.readline().decode('utf-8')
-                if read.messages_config(messages):
-                    continue
-                if messages[0] == '@':
-                    break
-
-                index = messages.find('|')
-                index2 = messages.find('|',index+1)
-                index3 = messages.find('|',index2+1)
-                h = int(messages[1:index])
-                s = int(messages[index+1:index2])
-                l = int(messages[index2+1:index3])   
-                print(h,s,l)
-
-                h_list= []
-                s_list = []
-                l_list = []
-                h_list.append(h)
-                s_list.append(s)
-                l_list.append(l)
-            
-            #赋值
-            print("地板颜色："+str(int(sum(h_list)/len(h_list))),str(int(sum(s_list)/len(s_list))),str(int(sum(l_list)/len(l_list))))
-         
-    #ID
+                    
+    #ID:$|12|
     def read_ID(self,messages):
-        pass
+        #找到第一个'|'
+        index = messages.find('|')
+        #找到第二个'|'
+        index2 = messages.find('|',index+1)
+        #拿到两个|之间的数据
+        id = int(messages[index+1:index2])
+        return id
 
+    #DIS:&|20|
+    def read_DIS(self,messages):
+        #找到第一个'|'
+        index1 = messages.find('|')
+        #找到第二个'|'
+        index2 = messages.find('|',index1+1)
 
-read =Read_Serial()
+        #拿到两个|之间的数据
+        dis = int(messages[index1+1:index2])
+        return dis
 
-read.HSL_test(4)
+# read_serial =  Read_Serial()
+# read_serial.HSL_test(2)
 
 
 # while True:
 #     messages = MY_SERIAL.readline().decode('utf-8')
-#     if read.messages_config(messages):
-#         continue
-#     read.read_HSL(messages)
+#     print(messages)
 
-    
+
+
+

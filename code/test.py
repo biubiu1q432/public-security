@@ -1,17 +1,6 @@
 import cv2
 
 
-# messages = "$|5|"
-
-# #找到第一个'|'
-# index = messages.find('|')
-# #找到第二个'|'
-# index2 = messages.find('|',index+1)
-# #拿到两个|之间的数据
-# data = int(messages[index+1:index2])
-
-# print(data)
-
 
 #录像
 cap = cv2.VideoCapture(0)

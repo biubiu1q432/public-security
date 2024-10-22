@@ -68,15 +68,19 @@ def getContours(img,imgContour):
             peri = cv2.arcLength(cnt, True)
             approx = cv2.approxPolyDP(cnt, 0.02 * peri, True)
             x , y , w, h = cv2.boundingRect(approx)
+    
+            # ratio = w / h
+
+
+
             cv2.rectangle(imgContour, (x , y ), (x + w , y + h ), (0, 255, 0), 5)
 
             cv2.putText(imgContour, "Points: " + str(len(approx)), (x + w + 20, y + 20), cv2.FONT_HERSHEY_COMPLEX, .7,
                         (0, 255, 0), 2)
             cv2.putText(imgContour, "Area: " + str(int(area)), (x + w + 20, y + 45), cv2.FONT_HERSHEY_COMPLEX, 0.7,
                         (0, 255, 0), 2)
-            print("Points: " + str(len(approx)))         
-            print("Area: "+ str(int(area)))
-
+            # print("Points: " + str(len(approx)))         
+            # print("Area: "+ str(int(area)))
 
 
 while True:
@@ -108,7 +112,7 @@ while True:
     #调试
     imgStack = stackImages(0.8,([img,imgCanny],
                                 [imgDil,imgContour]))
-    imgStack = cv2.resize(imgStack, (300,200)) 
+    # imgStack = cv2.resize(imgStack, (300,200)) 
     cv2.imshow("Result", imgStack)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):

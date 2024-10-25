@@ -48,16 +48,16 @@ class Detect:
         self.ROI_range=45 #空心
         
         #颜色阈值
-        self.red_low = np.array([166, 170, 42])
-        self.red_up = np.array([255, 255, 150])
+        self.red_low = np.array([0, 120, 101])
+        self.red_up = np.array([232, 209, 217])
         self.red_iter = 1
         
-        self.blue_low = np.array([85, 170, 0])
-        self.blue_up = np.array([157, 255, 92])
+        self.blue_low = np.array([78, 77, 47])
+        self.blue_up = np.array([148, 189, 129])
         self.blue_iter = 1
         
-        self.white_low = np.array([64, 53, 85])
-        self.white_up = np.array([136, 165, 242])
+        self.white_low = np.array([0, 0, 104])
+        self.white_up = np.array([137, 100, 255])
         self.white_iter = 1
         
      #一次侦察流程
@@ -67,11 +67,11 @@ class Detect:
             
             ret, frame = self.cap.read()
             if ret:
-                shape1,center_x,center_y,x,y = detect.Shape_Detect(frame)
+                shape1,center_x,center_y,x,y = self.Shape_Detect(frame)
                 if shape1 == None or center_x == None or center_y == None or x == None or y == None :
                     continue
 
-                shape2,color=detect.Color_Detect(frame,center_x,center_y,x,y)
+                shape2,color=self.Color_Detect(frame,center_x,center_y,x,y)
                 
                 #              实心1     空心2   红色1    蓝色2
                 #矩形   1   
@@ -204,8 +204,9 @@ class Detect:
                 
                 #过滤
                 if len(approx) != 4:
-                    cv2.imshow("Result", img)
-                    cv2.waitKey(1)
+                    # img = cv2.resize(img, (300,200)) 
+                    # cv2.imshow("Result", img)
+                    # cv2.waitKey(1)
                     return None,None,None,None,None
                 
                 x, y ,w,h = cv2.boundingRect(approx)
@@ -267,11 +268,11 @@ class Detect:
                     print("正方形")
                     shape = 4    
                 else:
-                    cv2.imshow("Result", img)
-                    cv2.waitKey(1)
+                    # cv2.imshow("Result", img)
+                    # cv2.waitKey(1)
                     return None,None,None,None,None
                 
-        #         #调试
+                #调试
         #         cv2.drawContours(img, cnt, -1, (255, 0, 255), 7)
         #         cv2.putText(img, "Points: " + str(len(approx)), (x + w + 20, y + 20), cv2.FONT_HERSHEY_COMPLEX, .7,
         #                     (0, 255, 0), 2)
@@ -281,6 +282,7 @@ class Detect:
         #         #    print("Area: "+ str(int(area)))        
                 
         # #调试
+        # img = cv2.resize(img, (300,200)) 
         # cv2.imshow("Result", img)
         # cv2.waitKey(1)
         
@@ -360,5 +362,3 @@ class Detect:
 
         return shape,color
 
-detect = Detect()
-detect.Detect()

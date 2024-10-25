@@ -112,7 +112,7 @@ while True:
     #调试
     imgStack = stackImages(0.8,([img,imgCanny],
                                 [imgDil,imgContour]))
-    # imgStack = cv2.resize(imgStack, (300,200)) 
+    imgStack = cv2.resize(imgStack, (300,200)) 
     cv2.imshow("Result", imgStack)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):

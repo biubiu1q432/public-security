@@ -54,7 +54,6 @@ def stackImages(scale,imgArray):
         ver = hor
     return ver
 
-
 def getContours(img,imgContour):
     contours, hierarchy = cv2.findContours(img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     
@@ -112,7 +111,7 @@ while True:
     #调试
     imgStack = stackImages(0.8,([img,imgCanny],
                                 [imgDil,imgContour]))
-    # imgStack = cv2.resize(imgStack, (300,200)) 
+    imgStack = cv2.resize(imgStack, (300,200)) 
     cv2.imshow("Result", imgStack)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):

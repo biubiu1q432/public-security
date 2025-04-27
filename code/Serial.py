@@ -1,10 +1,24 @@
 
+import serial
+import time
 
 class Read_Serial:
 
+    # def __init__(self):
+        
+    #     #面积过滤
+    #     self.area_min = 280
+    #     self.area_max = 7000
+    #     #斜率过滤
+    #     self.derta_min = 2
+    #     self.derta_max = 6
+
+    #     self.targrt_Stop = 140
+    #     self.allow_err = 10
+    
     #消息认证
     def messages_config(self,messages):
-        if messages[0] != '@' and messages[0] != '#' and  messages[0] != '!':
+        if messages[0] != '@' and messages[0] != '#' and  messages[0] != '!' and messages[0] != '$':
             return True
         else:
             return False
@@ -19,7 +33,7 @@ class Read_Serial:
         id = int(messages[index+1:index2])
         return id
 
-    #DIS:&|20|
+    #DIS:$|20|
     def read_DIS(self,messages):
         #找到第一个'|'
         index1 = messages.find('|')
@@ -29,12 +43,11 @@ class Read_Serial:
         #拿到两个|之间的数据
         dis = int(messages[index1+1:index2])
         return dis
+            
 
 
-# while True:
-#     messages = MY_SERIAL.readline().decode('utf-8')
-#     print(messages)
-
-
-
-
+# r=Read_Serial()
+# K2L0_SERIAL = serial.Serial(port="/dev/tty_k2l0",baudrate=115200,bytesize=serial.EIGHTBITS,parity=serial.PARITY_NONE,stopbits=serial.STOPBITS_ONE,)
+# while  True:
+#     data = K2L0_SERIAL.readline().decode('utf-8')    
+#     print(data)

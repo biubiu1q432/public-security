@@ -18,15 +18,41 @@ start,end = 0.0,0.0
 def nothing(x):
     pass
 WindowName = 'result'
+
+
+#red
+# cv2.namedWindow(WindowName, cv2.WINDOW_KEEPRATIO)  # 建立空窗口
+# cv2.resizeWindow(WindowName, 200, 160)  # 调整窗口大小
+# cv2.createTrackbar('Bl', WindowName, 0, 255, nothing)  # 创建滑动条
+# cv2.createTrackbar('Gl', WindowName, 69, 255, nothing)  # 创建滑动条
+# cv2.createTrackbar('Rl', WindowName, 90, 255, nothing)  # 创建滑动条
+# cv2.createTrackbar('Bh', WindowName, 198, 255, nothing)  # 创建滑动条
+# cv2.createTrackbar('Gh', WindowName, 228, 255, nothing)  # 创建滑动条
+# cv2.createTrackbar('Rh', WindowName, 179, 255, nothing)  # 创建滑动条
+# cv2.createTrackbar('iterations', WindowName, 2, 20, nothing)  # 创建滑动条
+
+
+
 cv2.namedWindow(WindowName, cv2.WINDOW_KEEPRATIO)  # 建立空窗口
 cv2.resizeWindow(WindowName, 200, 160)  # 调整窗口大小
-cv2.createTrackbar('Bl', WindowName, 0, 255, nothing)  # 创建滑动条
-cv2.createTrackbar('Gl', WindowName, 0, 255, nothing)  # 创建滑动条
-cv2.createTrackbar('Rl', WindowName, 0, 255, nothing)  # 创建滑动条
-cv2.createTrackbar('Bh', WindowName, 0, 255, nothing)  # 创建滑动条
-cv2.createTrackbar('Gh', WindowName, 0, 255, nothing)  # 创建滑动条
-cv2.createTrackbar('Rh', WindowName, 0, 255, nothing)  # 创建滑动条
-cv2.createTrackbar('iterations', WindowName, 0, 20, nothing)  # 创建滑动条
+cv2.createTrackbar('Bl', WindowName, 53, 255, nothing)  # 创建滑动条
+cv2.createTrackbar('Gl', WindowName, 15, 255, nothing)  # 创建滑动条
+cv2.createTrackbar('Rl', WindowName, 119, 255, nothing)  # 创建滑动条
+cv2.createTrackbar('Bh', WindowName, 141, 255, nothing)  # 创建滑动条
+cv2.createTrackbar('Gh', WindowName, 174, 255, nothing)  # 创建滑动条
+cv2.createTrackbar('Rh', WindowName, 217, 255, nothing)  # 创建滑动条
+cv2.createTrackbar('iterations', WindowName, 2, 20, nothing)  # 创建滑动条
+
+
+
+#    self.red_low = np.array([0, 69,90])
+# self.red_up = np.array([198, 228, 179])
+
+#  self.blue_low = np.array([85, 98, 43])
+# self.blue_up = np.array([133, 255, 152])
+# self.red_low = np.array([0, 69,108])
+# self.red_up = np.array([198, 228, 179])
+# self.red_iter = 0
 
 def main():
     global cap
@@ -38,11 +64,17 @@ def main():
         except:
             pass  
     cap.set(cv2.CAP_PROP_FPS, 15)
-
-
+    
     while True:
             global start,end
-            ret, frame = cap.read()
+            
+            #拍照
+            # ret, frame = cap.read()
+            
+            #图片
+            frame = cv2.imread("/home/king/public security/photo/1.jpg")
+            ret = True
+            
             if ret:
 
                 # 获取滑动条值
@@ -58,9 +90,7 @@ def main():
                 #颜色空间转换
                 hsv_image = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-                #开运算
-                hsv_image = cv2.erode(hsv_image, np.ones((3,3),np.uint8), iterations=ite)
-                hsv_image = cv2.dilate(hsv_image, np.ones((3,3),np.uint8), iterations=ite)
+    
                 
                 #模糊处理
                 hsv_image = cv2.blur(hsv_image,(9,9))
@@ -69,25 +99,38 @@ def main():
                 lower_color = np.array([Bl, Gl, Rl])
                 upper_color = np.array([Bh, Gh, Rh])
                 mask = cv2.inRange(hsv_image, lower_color, upper_color)
-                print(cv2.countNonZero(mask))          
-                #获取色块轮廓（cv2.findContours()函数返回的轮廓列表是按轮廓大小排序的）
-                contours,hierarchy= cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                # print(cv2.countNonZero(mask))          
+            
+                # #开运算
+                # hsv_image = cv2.erode(hsv_image, np.ones((3,3),np.uint8), iterations=ite)
+                # hsv_image = cv2.dilate(hsv_image, np.ones((3,3),np.uint8), iterations=ite)
                 
-                biggest_area = 0
+                
+                #获取色块轮廓（cv2.findContours()函数返回的轮廓列表是按轮廓大小排序的）
+                contours,hierarchy= cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)                
                 if contours :
                     for contour in contours:#筛选出目标色块
                         x, y, w, h = cv2.boundingRect(contour)
-                        area = cv2.contourArea(contour)
-                        if area > biggest_area:
-                            biggest_area = area
-                        #print(str(biggest_area) + " _____ " + str(x + w / 2) + " _____ " + str(y + h / 2))
-                        #绘制矩形框
-                        cv2.rectangle(hsv_image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                        mu = cv2.moments(contour)
+                        area = w*h
+                        if area <= 20000:
+                            continue
+                        if mu['m00'] ==0:
+                            continue
+                        center_x = int(mu['m10']/mu['m00'])  
+                
+                        print(str(area) + " _____"  + str(center_x))
+                        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
                 
                 cv2.namedWindow("mask", cv2.WINDOW_KEEPRATIO)
+                cv2.namedWindow("frame", cv2.WINDOW_KEEPRATIO)
+
                 cv2.resizeWindow("mask", (300, 200))
+                cv2.resizeWindow("frame", (300, 200))
+
                 cv2.imshow("mask", mask)
-                
+                cv2.imshow("frame", frame)
                 # 按下 'q' 键退出循环
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
